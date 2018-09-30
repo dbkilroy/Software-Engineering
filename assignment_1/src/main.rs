@@ -109,7 +109,34 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
         assert_eq!(lca(graph, "d", "e"), "c");
     }
 
+    #[test]
+    fn test_lca_is_a() {
+        use super::*;
+        let mut graph = Graph::<&str, &str>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
 
+        graph.extend_with_edges(&[
+             (a, b), (b, c)
+        ]);
 
+        assert_eq!(lca(graph, "b", "c"), "b");
+    }
+
+    #[test]
+    fn test_lca_is_b() {
+        use super::*;
+        let mut graph = Graph::<&str, &str>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+
+        graph.extend_with_edges(&[
+             (a, b), (c, b)
+        ]);
+
+        assert_eq!(lca(graph, "b", "c"), "c");
+    }
 
 }
