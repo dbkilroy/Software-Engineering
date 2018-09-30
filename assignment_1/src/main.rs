@@ -1,14 +1,17 @@
 extern crate petgraph;
 use petgraph::Graph;
-use std::ptr;
 
 fn main() {
     println!("Hello, world!");
 }
 
-fn lca(mut graph: Graph<&str, &str>, x: i32, y: i32) {
+#[allow(dead_code)]
+#[allow(unused_variables)]
+fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
         let a = graph.add_node("x");
         let b = graph.add_node("y");
+
+        return String::from(" ");
 }
 
 //Pseudo-Code for proposed solution
@@ -27,10 +30,7 @@ fn lca(mut graph: Graph<&str, &str>, x: i32, y: i32) {
 
 #[cfg(test)]
  mod tests {
-    #[test]
-    fn exploration() {
-        assert_eq!(2 + 2, 4);
-    }
+
     // #[test]
     // fn larger_can_hold_smaller() {
     //     let larger = Rectangle { length: 8, width: 7 };
@@ -52,15 +52,27 @@ fn lca(mut graph: Graph<&str, &str>, x: i32, y: i32) {
     //     ]);
     // }
     #[test]
+    #[should_panic]
+    #[allow(unused_mut)]
     fn test_empty() {
         use super::*;
         let mut graph = Graph::<&str, &str>::new();
-        let a = 1;
-        let b = 2;
+        lca(graph, "1", "2");
+    }
 
-        assert_eq!(lca(graph, a, b), NULL, "Empty graph should return null as LCA");
+    #[test]
+    fn test_root_is_lca() {
+        use super::*;
+        let mut graph = Graph::<&str, &str>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
 
-        assert!((lca(graph, a, b).is_null());
+        graph.extend_with_edges(&[
+             (a, b), (a, c)
+        ]);
+
+        assert_eq!(lca(graph, "b", "c"), "a");
     }
 
 
