@@ -1,6 +1,7 @@
 [package]
-name = "Assignment_1"
+name = "assignment_1"
 version = "0.1.0"
 authors = ["kilroyda <kilroyda@tcd.ie>"]
 
 [dependencies]
+petgraph = "0.4.13"
