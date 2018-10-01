@@ -133,38 +133,21 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
         assert_eq!(b, lca(&graph, a, d, e).unwrap());
     }
 
-    // #[test]
-    // fn test_right_lca() {
-    //     use super::*;
-    //     let mut graph = Graph::<&str, i32>::new();
-    //     let a = graph.add_node("a");
-    //     let b = graph.add_node("b");
-    //     let c = graph.add_node("c");
-    //     let d = graph.add_node("d");
-    //     let e = graph.add_node("e");
-    //
-    //     graph.extend_with_edges(&[
-    //          (a, b), (a, c), (c, d), (c, e)
-    //     ]);
-    //
-    //     assert_eq!(lca(graph, a, d, e), c);
-    // }
-    //
-    // #[test]
-    // fn test_lca_is_a() {
-    //     use super::*;
-    //     let mut graph = Graph::<&str, i32>::new();
-    //     let a = graph.add_node("a");
-    //     let b = graph.add_node("b");
-    //     let c = graph.add_node("c");
-    //
-    //     graph.extend_with_edges(&[
-    //          (a, b), (b, c)
-    //     ]);
-    //
-    //     assert_eq!(lca(graph, a, b, c), b);
-    // }
-    //
+    #[test]
+    fn test_lca_is_b() {
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+
+        graph.extend_with_edges(&[
+             (a, b), (b, c)
+        ]);
+        assert_eq!(true, lca(&graph, a, b, c).is_some());
+        assert_eq!(b, lca(&graph, a, b, c).unwrap());
+    }
+
     // #[test]
     // fn test_lca_is_b() {
     //     use super::*;
