@@ -116,23 +116,23 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
         assert_eq!(a, lca(&graph, a, b, c).unwrap());
     }
 
-    // #[test]
-    // fn test_left_lca() {
-    //     use super::*;
-    //     let mut graph = Graph::<&str, i32>::new();
-    //     let a = graph.add_node("a");
-    //     let b = graph.add_node("b");
-    //     let c = graph.add_node("c");
-    //     let d = graph.add_node("d");
-    //     let e = graph.add_node("e");
-    //
-    //     graph.extend_with_edges(&[
-    //          (a, b), (a, c), (b, d), (b, e)
-    //     ]);
-    //
-    //     assert_eq!(lca(graph, a, d, e), b);
-    // }
-    //
+    #[test]
+    fn test_left_lca() {
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+        let d = graph.add_node("d");
+        let e = graph.add_node("e");
+
+        graph.extend_with_edges(&[
+             (a, b), (a, c), (b, d), (b, e)
+        ]);
+        assert_eq!(true, lca(&graph, a, d, e).is_some());
+        assert_eq!(b, lca(&graph, a, d, e).unwrap());
+    }
+
     // #[test]
     // fn test_right_lca() {
     //     use super::*;
