@@ -4,11 +4,9 @@ extern crate pathfinding;
 use petgraph::Graph;
 use petgraph::graph::NodeIndex;
 use std::collections::LinkedList;
-use self::pathfinding::prelude::astar;
+use pathfinding::prelude::astar;
 
-fn main() {
-    println!("Hello, world!");
-}
+fn main() {}
 
 fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, u32)> {
     let mut list: LinkedList<(NodeIndex, u32)> = LinkedList::new();
@@ -19,9 +17,19 @@ fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, 
     return list;
 }
 
-#[allow(dead_code)]
-#[allow(unused_variables)]
-#[allow(unused_mut)]
+//******************************************************************************************
+// lca function returns the lowest common ancestor of two nodes in a binary tree recursively
+// Parameters:
+//      graph - the graph containing the nodes
+//      root - root element of the Graph
+//      x - first node to calculate lowest common ancestor on
+//      y - second node to calculate lowest common ancestor on
+//
+// Returns:
+//      The NodeIndex of the lowest common ancestor or None
+//
+//******************************************************************************************
+
 pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeIndex) -> Option<NodeIndex>{
 
     let path1 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == x);
@@ -58,34 +66,8 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
             return Some(lca_btree);
         }
     return None;
-        // if root == "" {                 //    if (root == null) { return null; }
-        //     return String::from("");
-        // }
-        //
-        // if root == x || root == y {     //      if (root == n1 || root == n2) { return root; }
-        //     return String::from(root);
-        // }
 
-        //graph.neighbors_directed(root, Outgoing);      //pub fn neighbors_directed( &self, a: NodeIndex<Ix>,
-                                        //                     dir: Direction) -> Neighbors<E, Ix>
-        //let left = lca(graph, root, )   //Node left = LCA(root left, n1, n2);
-
-        //return root;
 }
-
-//Pseudo-Code for proposed solution
-/*
- *  Node LCA(Node root, Node n1, Node n2) {
- *      if (root == null) { return null; }
- *      if (root == n1 || root == n2) { return root; }
- *
- *      Node left = LCA(root left, n1, n2);
- *      Node right = LCA(rott right, n1, n2);
- *      if (left != null && right != null) { return root; }
- *      if (left == null && right == null) { return null; }
- *
- *      return left != null ? left : right;
- */
 
 #[cfg(test)]
  mod tests {
@@ -117,7 +99,7 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
     }
 
     #[test]
-    fn test_left_lca() {
+    fn test_lca_btree() {
         use super::*;
         let mut graph = Graph::<&str, i32>::new();
         let a = graph.add_node("a");
@@ -147,20 +129,4 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
         assert_eq!(true, lca(&graph, a, b, c).is_some());
         assert_eq!(b, lca(&graph, a, b, c).unwrap());
     }
-
-    // #[test]
-    // fn test_lca_is_b() {
-    //     use super::*;
-    //     let mut graph = Graph::<&str, i32>::new();
-    //     let a = graph.add_node("a");
-    //     let b = graph.add_node("b");
-    //     let c = graph.add_node("c");
-    //
-    //     graph.extend_with_edges(&[
-    //          (a, b), (c, b)
-    //     ]);
-    //
-    //     assert_eq!(lca(graph, a, b, c), c);
-    // }
-
 }
