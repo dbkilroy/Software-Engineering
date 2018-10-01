@@ -1,17 +1,39 @@
 extern crate petgraph;
 use petgraph::Graph;
+use petgraph::Outgoing;
+use petgraph::graph::NodeIndex;
 
 fn main() {
     println!("Hello, world!");
 }
 
+fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, u32)> {
+    let mut list: LinkedList<(NodeIndex, u32)> = LinkedList::new();
+    let mut neighbors = graph.neighbors(n).collect::<LinkedList<NodeIndex>>();
+    for element in neighbors.iter_mut() {
+        list.push_back((*element, 1));
+    }
+    return list;
+}
+
 #[allow(dead_code)]
 #[allow(unused_variables)]
-fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
-        let a = graph.add_node("x");
-        let b = graph.add_node("y");
+#[allow(unused_mut)]
+fn lca(mut graph: Graph<&str, &str>, root: NodeIndex, x: &str, y: &str) -> NodeIndex{
 
-        return String::from(" ");
+        // if root == "" {                 //    if (root == null) { return null; }
+        //     return String::from("");
+        // }
+        //
+        // if root == x || root == y {     //      if (root == n1 || root == n2) { return root; }
+        //     return String::from(root);
+        // }
+
+        graph.neighbors_directed(root, Outgoing);      //pub fn neighbors_directed( &self, a: NodeIndex<Ix>,
+                                        //                     dir: Direction) -> Neighbors<E, Ix>
+        //let left = lca(graph, root, )   //Node left = LCA(root left, n1, n2);
+
+        return root;
 }
 
 //Pseudo-Code for proposed solution
@@ -30,15 +52,6 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
 
 #[cfg(test)]
  mod tests {
-
-    // #[test]
-    // fn larger_can_hold_smaller() {
-    //     let larger = Rectangle { length: 8, width: 7 };
-    //     let smaller = Rectangle { length: 5, width: 1 };
-    //
-    //     assert!(larger.can_hold(&smaller));
-    // }
-
     // fn build_graph() {
     //     let mut deps = Graph::<&str, &str>::new();
     //     let pg = deps.add_node("petgraph");
@@ -57,22 +70,23 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
     fn test_empty() {
         use super::*;
         let mut graph = Graph::<&str, &str>::new();
-        lca(graph, "1", "2");
+        let root = graph.add_node("root");
+        lca(graph, root, "1", "2");
     }
 
     #[test]
     fn test_root_is_lca() {
         use super::*;
         let mut graph = Graph::<&str, &str>::new();
+        let root = graph.add_node("root");
         let a = graph.add_node("a");
         let b = graph.add_node("b");
         let c = graph.add_node("c");
-
         graph.extend_with_edges(&[
              (a, b), (a, c)
         ]);
 
-        assert_eq!(lca(graph, "b", "c"), "a");
+        assert_eq!(lca(graph, root, "a", "b"), root);
     }
 
     #[test]
@@ -89,7 +103,7 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
              (a, b), (a, c), (b, d), (b, e)
         ]);
 
-        assert_eq!(lca(graph, "d", "e"), "b");
+        assert_eq!(lca(graph, a, "d", "e"), b);
     }
 
     #[test]
@@ -106,7 +120,7 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
              (a, b), (a, c), (c, d), (c, e)
         ]);
 
-        assert_eq!(lca(graph, "d", "e"), "c");
+        assert_eq!(lca(graph, a, "d", "e"), c);
     }
 
     #[test]
@@ -121,7 +135,7 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
              (a, b), (b, c)
         ]);
 
-        assert_eq!(lca(graph, "b", "c"), "b");
+        assert_eq!(lca(graph, a, "b", "c"), b);
     }
 
     #[test]
@@ -136,7 +150,7 @@ fn lca(mut graph: Graph<&str, &str>, x: &str, y: &str) -> String{
              (a, b), (c, b)
         ]);
 
-        assert_eq!(lca(graph, "b", "c"), "c");
+        assert_eq!(lca(graph, a, "b", "c"), c);
     }
 
 }
