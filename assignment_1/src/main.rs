@@ -2,7 +2,6 @@ extern crate petgraph;
 extern crate pathfinding;
 
 use petgraph::Graph;
-use petgraph::Outgoing;
 use petgraph::graph::NodeIndex;
 use std::collections::LinkedList;
 use self::pathfinding::prelude::astar;
@@ -23,44 +22,42 @@ fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, 
 #[allow(dead_code)]
 #[allow(unused_variables)]
 #[allow(unused_mut)]
-fn lca(graph: &Graph<&str, &str>, root: NodeIndex, x: NodeIndex, y: NodeIndex) -> Option<NodeIndex>{
+pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeIndex) -> Option<NodeIndex>{
 
     let path1 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == x);
-    let path2 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == y);
+        let path2 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == y);
 
-    if x != y {
-        let reverse1 = astar(&x, |n| neighbors(&graph, *n), |_| 0, |n| *n == root);
-        let reverse2 = astar(&y, |n| neighbors(&graph, *n), |_| 0, |n| *n == root);
+        if x != y {
+            let reverse1 = astar(&x, |n| neighbors(&graph, *n), |_| 0, |n| *n == root);
+            let reverse2 = astar(&y, |n| neighbors(&graph, *n), |_| 0, |n| *n == root);
 
-        if reverse1.is_some() || reverse2.is_some() {
-            return None;
-        }
-    }
-
-    if path1.is_some() && path2.is_some() {
-        let path1arr = path1.unwrap().0;
-        let path2arr = path2.unwrap().0;
-
-        let len;
-        if path1arr.len() < path2arr.len() {
-            len = path1arr.len();
-        } else {
-            len = path2arr.len();
-        }
-
-        let mut lca_btree = root;
-
-        for i in 0..len {
-            if path1arr[i] == path2arr[i] {
-                lca_btree = path1arr[i]
-            } else {
-                break;
+            if reverse1.is_some() || reverse2.is_some() {
+                return None;
             }
         }
-        return Some(lca_btree);
-    }
 
-return None;
+        if path1.is_some() && path2.is_some() {
+            let path1arr = path1.unwrap().0;
+            let path2arr = path2.unwrap().0;
+
+            let len;
+            if path1arr.len() < path2arr.len() {
+                len = path1arr.len();
+            } else {
+                len = path2arr.len();
+            }
+
+            let mut lca_btree = root;
+            for i in 0..len {
+                if path1arr[i] == path2arr[i] {
+                    lca_btree = path1arr[i]
+                } else {
+                    break;
+                }
+            }
+            return Some(lca_btree);
+        }
+    return None;
         // if root == "" {                 //    if (root == null) { return null; }
         //     return String::from("");
         // }
@@ -92,48 +89,37 @@ return None;
 
 #[cfg(test)]
  mod tests {
-    // fn build_graph() {
-    //     let mut deps = Graph::<&str, &str>::new();
-    //     let pg = deps.add_node("petgraph");
-    //     let fb = deps.add_node("fixedbitset");
-    //     let qc = deps.add_node("quickcheck");
-    //     let rand = deps.add_node("rand");
-    //     let libc = deps.add_node("libc");
-    //     deps.extend_with_edges(&[
-    //         (pg, fb), (pg, qc),
-    //         (qc, rand), (rand, libc), (qc, libc),
-    //     ]);
-    // }
     #[test]
     #[allow(unused_mut)]
     fn test_no_connections() {
         use super::*;
-        let mut graph = Graph::<&str, &str>::new();
+        let mut graph = Graph::<&str, i32>::new();
         let root = graph.add_node("root");
         let n1 = graph.add_node("1");
         let n2 = graph.add_node("2");
         assert_eq!(false, lca(&graph, root, n1, n2).is_some());
     }
 
-    // #[test]
-    // fn test_root_is_lca() {
-    //     use super::*;
-    //     let mut graph = Graph::<&str, &str>::new();
-    //     let root = graph.add_node("root");
-    //     let a = graph.add_node("a");
-    //     let b = graph.add_node("b");
-    //     let c = graph.add_node("c");
-    //     graph.extend_with_edges(&[
-    //          (a, b), (a, c)
-    //     ]);
-    //
-    //     assert_eq!(root, lca(graph, root, a, b));
-    // }
-    //
+    #[test]
+    fn test_root_is_lca() {
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+
+        graph.extend_with_edges(&[
+             (a, b), (a, c),
+        ]);
+
+        assert_eq!(true, lca(&graph, a, b, c).is_some());
+        assert_eq!(a, lca(&graph, a, b, c).unwrap());
+    }
+
     // #[test]
     // fn test_left_lca() {
     //     use super::*;
-    //     let mut graph = Graph::<&str, &str>::new();
+    //     let mut graph = Graph::<&str, i32>::new();
     //     let a = graph.add_node("a");
     //     let b = graph.add_node("b");
     //     let c = graph.add_node("c");
@@ -150,7 +136,7 @@ return None;
     // #[test]
     // fn test_right_lca() {
     //     use super::*;
-    //     let mut graph = Graph::<&str, &str>::new();
+    //     let mut graph = Graph::<&str, i32>::new();
     //     let a = graph.add_node("a");
     //     let b = graph.add_node("b");
     //     let c = graph.add_node("c");
@@ -167,7 +153,7 @@ return None;
     // #[test]
     // fn test_lca_is_a() {
     //     use super::*;
-    //     let mut graph = Graph::<&str, &str>::new();
+    //     let mut graph = Graph::<&str, i32>::new();
     //     let a = graph.add_node("a");
     //     let b = graph.add_node("b");
     //     let c = graph.add_node("c");
@@ -182,7 +168,7 @@ return None;
     // #[test]
     // fn test_lca_is_b() {
     //     use super::*;
-    //     let mut graph = Graph::<&str, &str>::new();
+    //     let mut graph = Graph::<&str, i32>::new();
     //     let a = graph.add_node("a");
     //     let b = graph.add_node("b");
     //     let c = graph.add_node("c");
