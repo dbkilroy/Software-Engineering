@@ -34,7 +34,9 @@ fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, 
 
 pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeIndex) -> Option<NodeIndex>{
 
-    let path1 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == x);
+
+
+        let path1 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == x);
         let path2 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == y);
 
         if x != y {
@@ -133,7 +135,26 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
     }
 
     #[test]
-    fn dag_simple() {
+    fn dag_tri_branched_root(){
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+        let d = graph.add_node("d");
+        let e = graph.add_node("e");
+        let f = graph.add_node("f");
+
+        graph.extend_with_edges(&[
+             (a, b), (a, c), (a, d), (b, e), (c, e), (c, f)
+        ]);
+
+        assert_eq!(true, lca(&graph, a, e, f).is_some());
+        assert_eq!(c, lca(&graph, a, e, f).unwrap());
+    }
+
+    #[test]
+    fn dag_sparce() {
         use super::*;
         let mut graph = Graph::<&str, i32>::new();
         let a = graph.add_node("a");
@@ -147,8 +168,27 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
         ]);
 
         assert_eq!(true, lca(&graph, a, d, e).is_some());
-        assert_eq!(b, lca(&graph, a, d, e).unwrap());
+        assert_eq!(e, lca(&graph, a, d, e).unwrap());
     }
 
+    #[test]
+    fn dag_dense(){
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+        let d = graph.add_node("d");
+        let e = graph.add_node("e");
+        let f = graph.add_node("f");
+        let g = graph.add_node("g");
+
+        graph.extend_with_edges(&[
+             (a, b), (b, c), (c, d), (b, e), (e, f), (d, g), (f, g)
+        ]);
+
+        assert_eq!(true, lca(&graph, a, g, e).is_some());
+        assert_eq!(e, lca(&graph, a, g, e).unwrap());
+    }
 
 }
