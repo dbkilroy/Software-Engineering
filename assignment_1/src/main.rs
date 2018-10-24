@@ -18,6 +18,7 @@ fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, 
     return list;
 }
 
+
 //******************************************************************************************
 // lca function returns the lowest common ancestor of two nodes in a binary tree recursively
 // Parameters:
@@ -130,4 +131,24 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
         assert_eq!(true, lca(&graph, a, b, c).is_some());
         assert_eq!(b, lca(&graph, a, b, c).unwrap());
     }
+
+    #[test]
+    fn dag_simple() {
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+        let d = graph.add_node("d");
+        let e = graph.add_node("e");
+
+        graph.extend_with_edges(&[
+             (a, b), (b, c), (c, d), (b, e), (e, d)
+        ]);
+
+        assert_eq!(true, lca(&graph, a, d, e).is_some());
+        assert_eq!(b, lca(&graph, a, d, e).unwrap());
+    }
+
+
 }
