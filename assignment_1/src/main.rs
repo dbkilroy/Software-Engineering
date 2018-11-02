@@ -34,8 +34,6 @@ fn neighbors<N, E>(graph: &Graph<N, E>, n: NodeIndex) -> LinkedList<(NodeIndex, 
 
 pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeIndex) -> Option<NodeIndex>{
 
-
-
         let path1 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == x);
         let path2 = astar(&root, |n| neighbors(&graph, *n), |_| 0, |n| *n == y);
 
@@ -189,6 +187,22 @@ pub fn lca<N, E>(graph: &Graph<N, E>, root: NodeIndex, x: NodeIndex, y: NodeInde
 
         assert_eq!(true, lca(&graph, a, g, e).is_some());
         assert_eq!(e, lca(&graph, a, g, e).unwrap());
+    }
+
+    #[test]
+    fn lca_root_root(){
+        use super::*;
+        let mut graph = Graph::<&str, i32>::new();
+        let a = graph.add_node("a");
+        let b = graph.add_node("b");
+        let c = graph.add_node("c");
+
+        graph.extend_with_edges(&[
+             (a, b), (b, c)
+        ]);
+
+        assert_eq!(true, lca(&graph, a, a, a).is_some());
+        assert_eq!(a, lca(&graph, a, a, a).unwrap());
     }
 
 }
